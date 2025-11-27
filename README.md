@@ -2,6 +2,7 @@ SMART TASK ANALYZER
 
 An intelligent task prioritization system built with Django and JavaScript that analyzes tasks based on urgency, importance, effort, and dependencies.
 
+
 SETUP INSTRUCTIONS
 
 Prerequisites:
@@ -16,6 +17,8 @@ Backend Setup:
 3. Activate virtual environment: venv\Scripts\activate (Windows) or source venv/bin/activate (Mac/Linux)
 4. Install dependencies: pip install -r requirements.txt
 5. Run migrations: python manage.py migrate
+
+
 
 Frontend Setup:
 The frontend is static HTML/CSS/JavaScript with no build step required.
@@ -35,6 +38,8 @@ Method 1 - Python HTTP Server (Recommended):
 2. Run: python -m http.server 8080
 3. Open browser to: http://localhost:8080
 
+
+
 Method 2 - Direct File Access:
 Open frontend/index.html directly in browser (may have CORS issues)
 
@@ -44,6 +49,8 @@ Testing the Application:
 2. Open frontend in browser
 3. Load demo data: Open console (F12), type loadDemoData(), press Enter
 4. Click "Analyze Tasks" button
+
+
 
 ALGORITHM EXPLANATION
 
@@ -57,9 +64,16 @@ Component 3 - Effort Score: This component rewards "quick wins" using an inverse
 
 Component 4 - Dependency Score: This evaluates how many other tasks are blocked by the current task. Tasks with no dependents receive a baseline 20 points. Blocking 1 task gives 50 points, blocking 2 tasks gives 70 points, and blocking 3 or more tasks receives 90-100 points marked as CRITICAL BLOCKER. The system uses depth-first search (DFS) graph algorithms to detect circular dependencies, which receive 0 points as a penalty.
 
+
+
 Strategy Weighting: Four strategies adjust component weights for different contexts. Smart Balance uses 30 percent urgency, 30 percent importance, 20 percent effort, 20 percent dependency for general use. Fastest Wins emphasizes 50 percent effort for momentum building. High Impact prioritizes 45 percent importance and 30 percent dependency for maximum impact. Deadline Driven allocates 60 percent to urgency for crisis situations.
 
+
+
 Final Calculation: Priority Score equals (urgency_weight times urgency_score) plus (importance_weight times importance_score) plus (effort_weight times effort_score) plus (dependency_weight times dependency_score). Scores 75 and above are HIGH priority (red), 50-74 are MEDIUM (yellow), and below 50 are LOW (green). This transparent scoring system provides detailed explanations for each task ranking.
+
+
+
 
 DESIGN DECISIONS
 
@@ -70,6 +84,8 @@ Algorithm Design: Normalized 0-100 scoring across all components provides consis
 Frontend Design: Vanilla JavaScript eliminates framework overhead for fast, lightweight operation. Dual input modes (form and JSON bulk import) accommodate both casual users and power users. Real-time validation reduces server load and improves user experience.
 
 Dependency Management: Graph algorithms (DFS) efficiently detect circular dependencies with O(V+E) complexity. The system handles complex dependency trees and provides clear warnings for cycle detection.
+
+
 
 EDGE CASES HANDLED
 
@@ -82,6 +98,9 @@ EDGE CASES HANDLED
 7. Timezone Handling: All calculations use Django timezone utilities for cross-timezone compatibility
 8. Missing Fields: Dependencies default to empty list, IDs auto-assigned when missing
 
+
+
+
 TIME BREAKDOWN
 
 Algorithm Design and Implementation: 3 hours (30 percent)
@@ -91,6 +110,8 @@ Testing and Debugging: 1.5 hours (15 percent)
 Documentation: 1 hour (10 percent)
 Total Development Time: 10 hours
 
+
+
 FUTURE IMPROVEMENTS
 
 Algorithm: Machine learning for user preference adaptation, historical data for completion time prediction, team collaboration factors, resource constraint modeling
@@ -99,12 +120,16 @@ Technical: GraphQL API option, WebSocket real-time updates, caching layer, CSV/E
 Testing: Integration tests, load testing, frontend unit tests, end-to-end testing, performance benchmarks
 DevOps: Docker containerization, CI/CD pipeline, production deployment guide, monitoring and alerting
 
+
+
 BONUS FEATURES ATTEMPTED
 
 IMPLEMENTED BONUS 1 - Circular Dependency Detection and Visualization (COMPLETE):
 Implementation: Full graph-based cycle detection using depth-first search algorithm in scoring.py (lines 100-190). The detect_circular_dependencies() function builds a dependency graph and applies DFS with recursion stack to identify cycles. Tasks involved in circular dependencies receive 0 dependency score as penalty. Frontend displays visual warning boxes showing specific task IDs affected by circular dependencies.
 How It Works: When analyzing tasks, the system constructs a directed graph of dependencies and traverses it using DFS. If a node is encountered that is already in the recursion stack, a cycle is detected. All tasks in the cycle are flagged and displayed to the user with a warning message.
 Testing: Add Task 1 depending on Task 2, and Task 2 depending on Task 1. The system will detect the cycle and display: "Warning: Circular dependencies detected in tasks: [1, 2]"
+
+
 
 IMPLEMENTED BONUS 2 - Unit Tests for Scoring Algorithm (COMPLETE):
 Implementation: Comprehensive test suite in tests.py with 30+ test cases covering all aspects of the scoring system.
@@ -116,6 +141,8 @@ Coverage Details:
 - EdgeCaseTests (5 tests): Invalid dependencies handling, extreme estimated hours, identical task priorities, single task analysis
   How to Run: Navigate to backend directory and execute: python manage.py test
   Expected Output: "Ran 30+ tests in X.XXXs - OK"
+
+
 
 Additional Features Beyond Bonuses:
 
@@ -130,7 +157,11 @@ Detailed component-level score breakdowns
 Self-documenting API with strategy information endpoint
 
 
+
 Run Tests Command: cd backend then python manage.py test
+
 API Endpoints: /api/tasks/analyze/, /api/tasks/suggest/, /api/health/, /api/strategies/
+
 Frontend Demo: Open console, type loadDemoData(), click Analyze Tasks
+
 
