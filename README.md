@@ -133,3 +133,4 @@ Self-documenting API with strategy information endpoint
 Run Tests Command: cd backend then python manage.py test
 API Endpoints: /api/tasks/analyze/, /api/tasks/suggest/, /api/health/, /api/strategies/
 Frontend Demo: Open console, type loadDemoData(), click Analyze Tasks
+
